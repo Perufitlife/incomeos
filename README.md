@@ -65,6 +65,27 @@ pulls on demand.
 
 Each source can hold a **link** to its own dashboard — clicking the card opens it.
 
+## 🤖 Ask your AI (MCP)
+
+IncomeOS ships an **MCP server** so any AI agent (Claude, Cursor…) can read your
+income on demand — *"how much did I make this month across everything?"*
+
+```json
+{
+  "mcpServers": {
+    "incomeos": {
+      "command": "npx",
+      "args": ["-y", "incomeos-mcp"],
+      "env": { "INCOMEOS_URL": "https://your-incomeos.vercel.app", "INCOMEOS_TOKEN": "your-token" }
+    }
+  }
+}
+```
+
+Tools: `get_income_summary`, `get_sources`, `get_month`, `log_monthly_income`.
+See [`mcp/`](./mcp). Your data stays in your own instance — the MCP just calls
+its API with your token.
+
 ## Tech
 
 Next.js 16 (App Router) · Supabase (Postgres) · Recharts · Tailwind v4 · Vercel.
@@ -72,7 +93,7 @@ No multi-tenant server, no SaaS lock-in — it's just your data and your keys.
 
 ## Roadmap
 
-- [ ] **Income MCP** — ask your AI agent *"how much did I make this month?"*
+- [x] **Income MCP** — ask your AI agent *"how much did I make this month?"* ✅
 - [ ] More connectors (Gumroad, LemonSqueezy, AdSense, PayPal, Plaid)
 - [ ] Weekly email digest
 - [ ] CSV import/export

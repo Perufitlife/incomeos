@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IncomeOS — Ingresos Pasivos",
-  description: "Panel en tiempo real de todos tus ingresos pasivos en USD.",
+  title: "IncomeOS — Passive Income Dashboard",
+  description: "Self-hosted, real-time dashboard for all your passive income streams in USD.",
   robots: "noindex,nofollow",
 };
 
