@@ -1,0 +1,25 @@
+# IncomeOS
+
+> Open-source, self-hosted passive income dashboard. Aggregates every income
+> stream — Stripe, affiliates, marketplaces, ads, manual — into one real-time
+> screen in USD, by day / month / year. A free Baremetrics alternative for
+> indie hackers with a portfolio of small income streams.
+
+## What it is
+- Self-hosted (your own Supabase + Vercel), privacy-first, MIT licensed.
+- Stripe connector is automatic (net revenue grouped per product, zero config).
+- Everything else (Amazon affiliate, AdSense, sponsorships, marketplaces) is a
+  one-click monthly manual entry. Numbered sources, goals, month-over-month trend.
+
+## Who it's for
+Indie hackers, solo founders, build-in-public makers who earn from many small
+sources and want one dashboard without paying for Baremetrics/ProfitWell.
+
+## Keywords
+open source passive income dashboard, self-hosted revenue tracker, Baremetrics
+alternative, indie hacker income tracker, MRR dashboard, Stripe revenue
+dashboard self hosted, track all income streams in one place.
+
+## Links
+- Repo: https://github.com/Perufitlife/incomeos
+- License: MIT
