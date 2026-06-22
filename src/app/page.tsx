@@ -319,7 +319,7 @@ function Sources({ data, period, sel, onEdit }: { data: Data; period: Period; se
 function SourceCard({ s, period, sel, data, onEdit }: { s: SourceRow; period: Period; sel: string; data: Data; onEdit: (s: SourceRow) => void }) {
   const v = sourceValue(s, period, sel, data);
   const statusCls = s.status === 'active' ? 'live' : s.status === 'pending' ? 'pending' : 'future';
-  const open = () => { if (s.link) window.open(s.link, '_blank', 'noopener'); };
+  const open = () => { if (s.link && /^https?:\/\//i.test(s.link)) window.open(s.link, '_blank', 'noopener,noreferrer'); };
   return (
     <div className={'card fade p-4 flex flex-col gap-2 ' + (s.link ? 'clickable' : '')} onClick={open}>
       <div className="flex items-center justify-between gap-2">
