@@ -124,6 +124,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
+    if (action === 'update_goal') {
+      if (!body.id) return NextResponse.json({ error: 'id required' }, { status: 400 });
+      const upd: Record<string, unknown> = {};
+      if (typeof body.name === 'string') upd.name = body.name.trim().slice(0, 80);
+      if (body.target_usd !== undefined) { const t = money(body.target_usd); if (t === null || t <= 0) return NextResponse.json({ error: 'bad target' }, { status: 400 }); upd.target_usd = t; }
+      if (ALLOWED_PERIOD.has(body.period)) upd.period = body.period;
+      if (typeof body.scope === 'string') upd.scope = body.scope.slice(0, 60);
+      if (!Object.keys(upd).length) return NextResponse.json({ error: 'nothing to update' }, { status: 400 });
+      const { error } = await supabase.from('income_goals').update(upd).eq('id', body.id);
+      if (error) throw error;
+      return NextResponse.json({ ok: true });
+    }
+
     if (action === 'delete_goal') {
       if (!body.id) return NextResponse.json({ error: 'id required' }, { status: 400 });
       const { error } = await supabase.from('income_goals').delete().eq('id', body.id);

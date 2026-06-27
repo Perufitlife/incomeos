@@ -49,6 +49,7 @@ export default function Page() {
   const [lastFetch, setLastFetch] = useState<Date | null>(null);
   const [modal, setModal] = useState<null | 'source' | 'monthly' | 'goal'>(null);
   const [editSrc, setEditSrc] = useState<SourceRow | null>(null);
+  const [editGoal, setEditGoal] = useState<Goal | null>(null);
   const [syncing, setSyncing] = useState(false);
 
   useEffect(() => { const t = localStorage.getItem('io_token'); if (t) setToken(t); }, []);
@@ -113,7 +114,7 @@ export default function Page() {
             <div className={data.goals.length ? 'lg:col-span-2' : ''}>
               <Hero data={data} period={period} setPeriod={setPeriod} sel={sel} setSel={setSel} />
             </div>
-            {data.goals.length > 0 && <div className="lg:col-span-1"><Goals data={data} sel={sel} /></div>}
+            {data.goals.length > 0 && <div className="lg:col-span-1"><Goals data={data} sel={sel} token={token} onEdit={setEditGoal} onChanged={() => fetchData(token)} /></div>}
           </div>
           <Trend data={data} period={period} sel={sel} setSel={setSel} />
           <Sources data={data} period={period} sel={sel} onEdit={setEditSrc} />
@@ -129,6 +130,7 @@ export default function Page() {
       {modal === 'monthly' && data && <MonthlyModal token={token} data={data} sel={sel} onDone={() => fetchData(token)} onClosed={() => setModal(null)} />}
       {modal === 'goal' && data && <GoalModal token={token} sources={data.sources} onClose={() => setModal(null)} onDone={() => { setModal(null); fetchData(token); }} />}
       {editSrc && <EditSourceModal token={token} src={editSrc} onClose={() => setEditSrc(null)} onDone={() => { setEditSrc(null); fetchData(token); }} />}
+      {editGoal && <GoalModal token={token} sources={data!.sources} goal={editGoal} onClose={() => setEditGoal(null)} onDone={() => { setEditGoal(null); fetchData(token); }} />}
     </main>
   );
 }
@@ -227,8 +229,13 @@ function Mini({ label, v, on }: { label: string; v: number; on: boolean }) {
   );
 }
 
-function Goals({ data, sel }: { data: Data; sel: string }) {
+function Goals({ data, sel, token, onEdit, onChanged }: { data: Data; sel: string; token: string; onEdit: (g: Goal) => void; onChanged: () => void }) {
   if (!data.goals.length) return null;
+  async function delGoal(g: Goal) {
+    if (!confirm('Delete goal "' + g.name + '"?')) return;
+    await postManual(token, { action: 'delete_goal', id: g.id });
+    onChanged();
+  }
   return (
     <div className="card fade p-5 h-full">
       <div className="font-bold mb-3">🎯 Goals</div>
@@ -245,12 +252,16 @@ function Goals({ data, sel }: { data: Data; sel: string }) {
           const left = Math.max(0, Number(g.target_usd) - cur);
           return (
             <div key={g.id}>
-              <div className="flex justify-between text-sm mb-1">
-                <span>{g.name} <span className="muted">({g.period === 'year' ? data.currentYear : MONTHS[Number(sel.slice(5, 7)) - 1]})</span></span>
-                <span className="tabular font-bold">{Math.round(pct)}%</span>
+              <div className="flex justify-between items-center text-sm mb-1 gap-2">
+                <span className="truncate">{g.name} <span className="muted">({g.period === 'year' ? data.currentYear : MONTHS[Number(sel.slice(5, 7)) - 1]})</span></span>
+                <span className="flex items-center gap-1.5 shrink-0">
+                  <span className="tabular font-bold">{Math.round(pct)}%</span>
+                  <button className="iconbtn" title="Edit goal" style={{ width: 22, height: 22, fontSize: 11 }} onClick={() => onEdit(g)}>✎</button>
+                  <button className="iconbtn" title="Delete goal" style={{ width: 22, height: 22, fontSize: 11 }} onClick={() => delGoal(g)}>✕</button>
+                </span>
               </div>
               <div style={{ height: 9, background: '#0a0e17', borderRadius: 6, overflow: 'hidden' }}>
-                <div style={{ width: pct + '%', height: '100%', background: pct >= 100 ? 'var(--money)' : 'linear-gradient(90deg,var(--acc),var(--acc2))' }} />
+                <div style={{ width: Math.max(pct, 2) + '%', height: '100%', background: pct >= 100 ? 'var(--money)' : 'linear-gradient(90deg,var(--acc),var(--acc-2))' }} />
               </div>
               <div className="muted text-xs mt-1 tabular">{fmt(cur)} / {fmt(g.target_usd)} · {fmt(left)} left</div>
             </div>
@@ -553,14 +564,15 @@ function EditSourceModal({ token, src, onClose, onDone }: { token: string; src: 
   );
 }
 
-function GoalModal({ token, sources, onClose, onDone }: { token: string; sources: SourceRow[]; onClose: () => void; onDone: () => void }) {
-  const [name, setName] = useState('');
-  const [target, setTarget] = useState('');
-  const [periodG, setPeriodG] = useState('month');
-  const [scope, setScope] = useState('all');
+function GoalModal({ token, sources, goal, onClose, onDone }: { token: string; sources: SourceRow[]; goal?: Goal; onClose: () => void; onDone: () => void }) {
+  const editing = !!goal;
+  const [name, setName] = useState(goal?.name || '');
+  const [target, setTarget] = useState(goal ? String(goal.target_usd) : '');
+  const [periodG, setPeriodG] = useState<string>(goal?.period || 'month');
+  const [scope, setScope] = useState<string>(goal?.scope || 'all');
   const [busy, setBusy] = useState(false);
   return (
-    <ModalShell title="🎯 New goal" onClose={onClose}>
+    <ModalShell title={editing ? '✎ Edit goal' : '🎯 New goal'} onClose={onClose}>
       <label className="muted text-sm">Name</label>
       <input className="input mb-3 mt-1" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. $1,000/mo passive" />
       <div className="grid grid-cols-2 gap-3 mb-3">
@@ -582,8 +594,8 @@ function GoalModal({ token, sources, onClose, onDone }: { token: string; sources
         {sources.map((s) => <option key={s.id} value={s.slug}>{s.emoji} {s.name}</option>)}
       </select>
       <button className="btn w-full justify-center" disabled={busy || !name || !target}
-        onClick={async () => { setBusy(true); await postManual(token, { action: 'add_goal', name, target_usd: target, period: periodG, scope }); onDone(); }}>
-        {busy ? 'Saving…' : 'Create goal'}
+        onClick={async () => { setBusy(true); await postManual(token, editing ? { action: 'update_goal', id: goal!.id, name, target_usd: target, period: periodG, scope } : { action: 'add_goal', name, target_usd: target, period: periodG, scope }); onDone(); }}>
+        {busy ? 'Saving…' : (editing ? 'Save changes' : 'Create goal')}
       </button>
     </ModalShell>
   );
