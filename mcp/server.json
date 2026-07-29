@@ -1,0 +1,35 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "name": "io.github.Perufitlife/incomeos",
+  "description": "Ask what you earn across every income stream: Stripe, affiliates, app stores, ads, manual.",
+  "version": "0.2.2",
+  "repository": {
+    "url": "https://github.com/Perufitlife/incomeos",
+    "source": "github",
+    "subfolder": "mcp"
+  },
+  "websiteUrl": "https://incomeos.dev",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "incomeos-mcp",
+      "version": "0.2.2",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "INCOMEOS_URL",
+          "description": "https://app.incomeos.dev for the hosted version, or your own self-hosted deployment URL",
+          "isRequired": true
+        },
+        {
+          "name": "INCOMEOS_TOKEN",
+          "description": "API token from Dashboard -> Security (hosted), or your DASHBOARD_TOKEN (self-hosted)",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
+    }
+  ]
+}

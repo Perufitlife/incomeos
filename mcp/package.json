@@ -1,6 +1,6 @@
 {
   "name": "incomeos-mcp",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "MCP server for IncomeOS \u2014 ask your AI agent how much you made across every income stream (Stripe, affiliates, apps, ads, manual).",
   "type": "module",
   "bin": {
@@ -33,5 +33,6 @@
     "type": "git",
     "url": "git+https://github.com/Perufitlife/incomeos.git",
     "directory": "mcp"
-  }
+  },
+  "mcpName": "io.github.Perufitlife/incomeos"
 }
