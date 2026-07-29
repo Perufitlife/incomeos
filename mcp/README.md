@@ -8,7 +8,11 @@ agent how much you're making across **all** your income streams.
 
 ## Setup
 
-Add to your MCP client (Claude Desktop, Cursor, etc.):
+### Using the hosted version (fastest)
+
+1. Sign in at [app.incomeos.dev](https://app.incomeos.dev) — free, no card.
+2. Connect Stripe read-only, or add any source manually.
+3. Open **Security → Create API token** and copy it.
 
 ```json
 {
@@ -17,13 +21,30 @@ Add to your MCP client (Claude Desktop, Cursor, etc.):
       "command": "npx",
       "args": ["-y", "incomeos-mcp"],
       "env": {
-        "INCOMEOS_URL": "https://your-incomeos.vercel.app",
-        "INCOMEOS_TOKEN": "your-DASHBOARD_TOKEN"
+        "INCOMEOS_URL": "https://app.incomeos.dev",
+        "INCOMEOS_TOKEN": "iok_your_token_here"
       }
     }
   }
 }
 ```
+
+### Self-hosting
+
+Same config, but point `INCOMEOS_URL` at your own deployment and use your
+`DASHBOARD_TOKEN`:
+
+```json
+{
+  "env": {
+    "INCOMEOS_URL": "https://your-incomeos.vercel.app",
+    "INCOMEOS_TOKEN": "your-DASHBOARD_TOKEN"
+  }
+}
+```
+
+Tokens are stored hashed, show a last-used timestamp, and can be revoked
+individually from the dashboard.
 
 ## Tools
 

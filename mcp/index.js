@@ -5,8 +5,10 @@
  * income across every stream tracked in your IncomeOS dashboard.
  *
  * Config (env):
- *   INCOMEOS_URL    e.g. https://your-incomeos.vercel.app
- *   INCOMEOS_TOKEN  your DASHBOARD_TOKEN
+ *   INCOMEOS_URL    https://app.incomeos.dev  (hosted)
+ *                   or https://your-incomeos.vercel.app (self-hosted)
+ *   INCOMEOS_TOKEN  hosted: an API token from Dashboard -> Security (iok_...)
+ *                   self-hosted: your DASHBOARD_TOKEN
  */
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
@@ -16,7 +18,13 @@ const BASE = (process.env.INCOMEOS_URL || '').replace(/\/$/, '');
 const TOKEN = process.env.INCOMEOS_TOKEN || '';
 
 async function api(path, opts = {}) {
-  if (!BASE || !TOKEN) throw new Error('Set INCOMEOS_URL and INCOMEOS_TOKEN environment variables.');
+  if (!BASE || !TOKEN) {
+    throw new Error(
+      'Set INCOMEOS_URL and INCOMEOS_TOKEN. For the hosted version use ' +
+      'INCOMEOS_URL=https://app.incomeos.dev and create a token at ' +
+      'https://app.incomeos.dev -> Security -> Create API token.',
+    );
+  }
   const r = await fetch(BASE + path, {
     ...opts,
     headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json', ...(opts.headers || {}) },
