@@ -18,6 +18,19 @@ A free, self-hostable **Baremetrics alternative** for indie hackers who run a
 > Your revenue data lives in **your own** Supabase project. No third party ever
 > sees your numbers. Connect your own keys, deploy free on Vercel in ~5 minutes.
 
+### Don't want to run a server?
+
+There's a hosted version at **[app.incomeos.dev](https://app.incomeos.dev)** —
+same dashboard, same MCP, nothing to deploy. Sign in with an email link, connect
+Stripe read-only in one click, done in about a minute.
+
+Free to start (unlimited manual sources, all charts, sync on demand).
+**Pro is $9/mo with a 14-day trial** and adds automatic daily sync, so the
+numbers are already fresh when you open it.
+
+Self-hosting stays free and fully featured — the hosted version exists for people
+who'd rather not maintain infrastructure, not to cripple this repo.
+
 ---
 
 ## Why IncomeOS?
