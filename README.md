@@ -15,6 +15,16 @@ A free, self-hostable **Baremetrics alternative** for indie hackers who run a
   <img alt="Deploy" src="https://img.shields.io/badge/deploy-Vercel-black">
 </p>
 
+<p align="center">
+  <img alt="IncomeOS dashboard — every income stream on one screen" src="docs/dashboard.png" width="820">
+</p>
+
+<p align="center">
+  <img alt="Income sources — Stripe products alongside manual sources" src="docs/sources.png" width="820">
+</p>
+
+<p align="center"><sub>Screenshots use demo data.</sub></p>
+
 > Your revenue data lives in **your own** Supabase project. No third party ever
 > sees your numbers. Connect your own keys, deploy free on Vercel in ~5 minutes.
 
